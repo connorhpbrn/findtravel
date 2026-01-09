@@ -6,26 +6,59 @@ import { saveTrip, generateTripId } from '@/lib/storage';
 import { fetchTripPlan } from '@/lib/api';
 
 function linkifyText(text: string): React.ReactNode {
-  const urlRegex = /(https?:\/\/[^\s]+)/g;
-  const parts = text.split(urlRegex);
+  // Handle markdown-style links [text](url) and plain URLs
+  const markdownLinkRegex = /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g;
+  const plainUrlRegex = /(https?:\/\/[^\s\)]+)/g;
   
-  return parts.map((part, index) => {
-    if (urlRegex.test(part)) {
-      urlRegex.lastIndex = 0;
-      return (
-        <a
-          key={index}
-          href={part}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[#38bdf8] hover:text-[#7dd3fc] hover:underline transition-colors"
-        >
-          {part}
-        </a>
-      );
-    }
-    return part;
+  // First, replace markdown links with a placeholder
+  const placeholders: { placeholder: string; text: string; url: string }[] = [];
+  let processedText = text.replace(markdownLinkRegex, (match, linkText, url) => {
+    const placeholder = `__LINK_${placeholders.length}__`;
+    placeholders.push({ placeholder, text: linkText, url });
+    return placeholder;
   });
+  
+  // Then handle plain URLs (that aren't already in markdown format)
+  processedText = processedText.replace(plainUrlRegex, (url) => {
+    // Extract domain name for display
+    try {
+      const domain = new URL(url).hostname.replace('www.', '');
+      const placeholder = `__LINK_${placeholders.length}__`;
+      placeholders.push({ placeholder, text: domain, url });
+      return placeholder;
+    } catch {
+      return url;
+    }
+  });
+  
+  // Split by placeholders and rebuild with React elements
+  const parts: React.ReactNode[] = [];
+  let lastIndex = 0;
+  
+  placeholders.forEach(({ placeholder, text: linkText, url }, index) => {
+    const placeholderIndex = processedText.indexOf(placeholder, lastIndex);
+    if (placeholderIndex > lastIndex) {
+      parts.push(processedText.slice(lastIndex, placeholderIndex));
+    }
+    parts.push(
+      <a
+        key={`link-${index}`}
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-[#38bdf8] hover:text-[#7dd3fc] hover:underline transition-colors"
+      >
+        {linkText}
+      </a>
+    );
+    lastIndex = placeholderIndex + placeholder.length;
+  });
+  
+  if (lastIndex < processedText.length) {
+    parts.push(processedText.slice(lastIndex));
+  }
+  
+  return parts.length > 0 ? parts : text;
 }
 
 interface ResultsScreenProps {
