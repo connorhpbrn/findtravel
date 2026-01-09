@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Fara - Thoughtful Travel Planning",
+  title: "FindTravel - Thoughtful Travel Planning",
   description: "A calm, thoughtful travel planner that designs trips around who you are.",
 };
 

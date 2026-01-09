@@ -1,6 +1,6 @@
 import { SavedTrip } from '@/types';
 
-const STORAGE_KEY = 'fara_saved_trips';
+const STORAGE_KEY = 'findtravel_saved_trips';
 
 export function getSavedTrips(): SavedTrip[] {
   if (typeof window === 'undefined') return [];

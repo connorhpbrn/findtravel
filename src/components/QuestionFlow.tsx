@@ -353,7 +353,7 @@ function ImageSelectInput({
             onClick={() => onChange(option.id)}
             className={`relative aspect-[4/3] rounded-xl overflow-hidden border-3 transition-all ${
               isSelected
-                ? 'border-[var(--accent)] ring-2 ring-[var(--accent)] ring-offset-2'
+                ? 'border-[var(--accent)]'
                 : 'border-transparent hover:border-[var(--accent)]/50'
             }`}
           >

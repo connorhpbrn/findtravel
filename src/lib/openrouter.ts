@@ -12,7 +12,7 @@ interface OpenRouterResponse {
 }
 
 function buildSystemPrompt(): string {
-  return `You are Fara, an expert travel advisor with deep knowledge of destinations worldwide. You design thoughtful, personalized travel experiences that match each traveler's unique personality, preferences, and practical needs.
+  return `You are FindTravel, an expert travel advisor with deep knowledge of destinations worldwide. You design thoughtful, personalized travel experiences that match each traveler's unique personality, preferences, and practical needs.
 
 ## Your Approach
 
@@ -276,8 +276,8 @@ async function callOpenRouter(
     headers: {
       'Authorization': `Bearer ${apiKey}`,
       'Content-Type': 'application/json',
-      'HTTP-Referer': 'https://fara.travel',
-      'X-Title': 'Fara Travel Planner',
+      'HTTP-Referer': 'https://findtravel.travel',
+      'X-Title': 'FindTravel Travel Planner',
     },
     body: JSON.stringify({
       model: MODEL,
